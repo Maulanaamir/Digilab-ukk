@@ -2,10 +2,15 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookController; 
-use App\Http\Middleware\IsAdmin; 
+use App\Http\Middleware\IsAdmin;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    if (Auth::check() && Auth::user()->role === 'admin') {
+        # code... ini biar kalo si atmin😹 login otomatis ke halaman dia. nyoba ke route untuk user otomatis di tendang.😸
+        return redirect()->route('dashboard');
+    }
     return view('welcome'); 
 });
 
