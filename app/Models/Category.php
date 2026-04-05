@@ -15,7 +15,7 @@ class Category extends Model
 
     public function books()
     {
-        return $this->hashMany(book::class);
+        return $this->hasMany(Book::class);
     }
     // Relasi ke table bbuku one to many, satu kategori bisa memiliki banyak buku.
 }

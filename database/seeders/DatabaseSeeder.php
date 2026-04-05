@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Bikin Akun Admin (Biar kamu bisa login sebagai admin)
         User::create([
             'name' => 'Administrator',
             'email' => 'admin@perpus.com',
@@ -22,19 +21,19 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // 2. Bikin Akun Siswa (Biar kamu bisa ngetes fitur peminjaman)
         User::create([
             'name' => 'Deswita Maharani',
             'email' => 'siswa@perpus.com',
-            'password' => bcrypt('password'), // Passwordnya: password
+            'password' => bcrypt('password'), 
             'role' => 'siswa',
             'id_member' => '001122',
         ]);
 
-        // 3. Bikin Kategori Buku
         $kategoriFiksi = Category::create(['name' => 'Novel & Fiksi']);
-        $kategoriPelajaran = Category::create(['name' => 'Buku Pelajaran']);
-
+        $kategoriPelajaran = Category::create(['name' => 'Pemrograman']);
+        $kategoriPelajaran = Category::create(['name' => 'Romance']);
+        $kategoriPelajaran = Category::create(['name' => 'Science']);
+        
         // 4. Bikin Data Buku
         Book::create([
             'title' => 'Mastering Laravel 12',
@@ -49,7 +48,7 @@ class DatabaseSeeder extends Seeder
             'author' => 'Andrea Hirata',
             'published_year' => 2005,
             'stock' => 5,
-            'category_id' => $kategoriFiksi->id, // Nyambung ke ID kategori fiksi
+            'category_id' => $kategoriFiksi->id, 
         ]);
     }
 }

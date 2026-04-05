@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage; 
 
 class BookController extends Controller
 {
@@ -13,9 +14,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        // Eager loading 'category' agar query database lebih ringan dan cepat
-        $books = Book::with('category')->latest()->get();
-        return view('books.index', compact('books'));
+        $book = Book::with('category')->latest()->get();
+        return view('books.index', compact('book'));
     }
 
     /**
@@ -40,9 +40,16 @@ class BookController extends Controller
             'published_year' => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
             'stock'          => 'required|integer|min:0',
             'category_id'    => 'required|exists:categories,id',
+            'image'          => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Maksimal 2MB
         ]);
 
-        // 2. Simpan ke database
+        if ($request->hasFile('image')) {
+            // Simpan gambar ke folder 'storage/app/public/books'
+            $imagePath = $request->file('image')->store('books', 'public');
+            // Masukkan path gambar ke dalam array data yang akan disimpan
+            $validatedData['image'] = $imagePath;
+        }
+
         Book::create($validatedData);
 
         // 3. Kembalikan ke halaman index dengan pesan sukses
@@ -67,7 +74,7 @@ class BookController extends Controller
     }
 
     /**
-     * Memperbarui data buku di database.
+     * Memperbarui data buku dan mengganti gambar lama jika ada yang baru.
      */
     public function update(Request $request, Book $book)
     {
@@ -78,9 +85,18 @@ class BookController extends Controller
             'published_year' => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
             'stock'          => 'required|integer|min:0',
             'category_id'    => 'required|exists:categories,id',
+            'image'          => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // 2. Update data ke database
+        if ($request->hasFile('image')) {
+            if ($book->image) {
+                Storage::disk('public')->delete($book->image);
+            }
+            
+            $imagePath = $request->file('image')->store('books', 'public');
+            $validatedData['image'] = $imagePath;
+        }
+
         $book->update($validatedData);
 
         // 3. Kembalikan ke halaman index dengan pesan sukses
@@ -92,6 +108,10 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
+        if ($book->image) {
+            Storage::disk('public')->delete($book->image);
+        }
+
         $book->delete();
         return redirect()->route('books.index')->with('success', 'Buku berhasil dihapus!');
     }
