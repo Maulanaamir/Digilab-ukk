@@ -14,7 +14,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $book = Book::with('category')->latest()->get();
+        $book = Book::with('category')->latest()->paginate(10);
         return view('books.index', compact('book'));
     }
 
@@ -23,17 +23,15 @@ class BookController extends Controller
      */
     public function create()
     {
-        // Ambil semua data kategori untuk ditampilkan di dropdown (select) form
         $categories = Category::all();
         return view('books.create', compact('categories'));
     }
 
     /**
-     * Menyimpan data buku baru ke database.
+     * Menyimpan data buku baru ke database beserta gambarnya.
      */
     public function store(Request $request)
     {
-        // 1. Validasi inputan agar tidak ada data kosong atau salah tipe
         $validatedData = $request->validate([
             'title'          => 'required|string|max:255',
             'author'         => 'required|string|max:100',
@@ -52,12 +50,10 @@ class BookController extends Controller
 
         Book::create($validatedData);
 
-        // 3. Kembalikan ke halaman index dengan pesan sukses
         return redirect()->route('books.index')->with('success', 'Buku baru berhasil ditambahkan!');
     }
 
     /**
-     * Menampilkan detail satu buku.
      */
     public function show(Book $book)
     {
@@ -78,7 +74,7 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        // 1. Validasi inputan sama seperti store
+        // 1. Validasi inputan
         $validatedData = $request->validate([
             'title'          => 'required|string|max:255',
             'author'         => 'required|string|max:100',
@@ -99,12 +95,11 @@ class BookController extends Controller
 
         $book->update($validatedData);
 
-        // 3. Kembalikan ke halaman index dengan pesan sukses
         return redirect()->route('books.index')->with('success', 'Data buku berhasil diperbarui!');
     }
 
     /**
-     * Menghapus buku dari database.
+     * Menghapus buku dari database beserta file gambarnya.
      */
     public function destroy(Book $book)
     {
@@ -113,6 +108,6 @@ class BookController extends Controller
         }
 
         $book->delete();
-        return redirect()->route('books.index')->with('success', 'Buku berhasil dihapus!');
+        return redirect()->route('books.index')->with('success', 'Buku beserta gambarnya berhasil dihapus!');
     }
 }
