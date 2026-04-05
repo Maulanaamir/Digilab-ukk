@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::post('/book/{id}/borrow', [LoanController::class, 'borrowBook'])->name('book.borrow');
         Route::get('/my-books', [LoanController::class, 'myBooks'])->name('my.books');
+        Route::post('/return-book/{id}', [App\Http\Controllers\LoanController::class, 'returnBook'])->name('book.return');
     });
 
     Route::middleware([IsAdmin::class])->group(function () {

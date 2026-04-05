@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // <-- Wajib untuk cek login Admin
+use Illuminate\Support\Facades\Auth; 
 
 class HomeController extends Controller
 {

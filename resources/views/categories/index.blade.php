@@ -40,9 +40,9 @@
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
-                <input type="text" name="search" value="{{ request('search') }}"
+                {{-- <input type="text" name="search" value="{{ request('search') }}"
                     placeholder="Cari kategori... (Tekan Enter)"
-                    class="bg-[#f4f5f7] border-none text-gray-600 text-sm rounded-xl focus:ring-0 block w-full pl-10 p-2 font-medium">
+                    class="bg-[#f4f5f7] border-none text-gray-600 text-sm rounded-xl focus:ring-0 block w-full pl-10 p-2 font-medium"> --}}
             </form>
         </div>
 

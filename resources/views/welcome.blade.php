@@ -56,9 +56,9 @@
                 Admin Dashboard
             </a>
             @else
-           <form action="{{ url('/') }}" method="GET" class="hidden md:block relative w-64 mr-2">
+            <form action="{{ url('/') }}" method="GET" class="hidden md:block relative w-64 mr-2">
                 @if(request('category'))
-                    <input type="hidden" name="category" value="{{ request('category') }}">
+                <input type="hidden" name="category" value="{{ request('category') }}">
                 @endif
 
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -67,20 +67,21 @@
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
-                
+
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search books..."
                     class="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-[#900b21] focus:border-[#900b21] block w-full pl-10 pr-10 px-4 py-2 outline-none transition-colors">
-                
+
                 @if(request('search'))
-                    <a href="{{ url('/' . (request('category') ? '?category='.request('category') : '')) }}" 
-                       class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#900b21] transition-colors cursor-pointer"
-                       title="Clear Search">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </a>
+                <a href="{{ url('/' . (request('category') ? '?category='.request('category') : '')) }}"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#900b21] transition-colors cursor-pointer"
+                    title="Clear Search">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </a>
                 @else
-                    <button type="submit" class="hidden">Search</button>
+                <button type="submit" class="hidden">Search</button>
                 @endif
             </form>
 
@@ -116,14 +117,15 @@
                         <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
                     </div>
 
-                    <a href="#"
-                        class="flex items-center gap-3 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-[#900b21] transition-colors">
-                        <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                            </path>
-                        </svg>
-                        My Borrowed Books
+                    <a href="{{ route('my.books') }}"
+                    class="flex items-center gap-3 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-red-50
+                    hover:text-[#900b21] transition-colors">
+                    <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                        </path>
+                    </svg>
+                    My Borrowed Books
                     </a>
 
                     <form method="POST" action="{{ route('logout') }}">
@@ -237,10 +239,11 @@
             </h2>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-                @foreach($books as $book)
+                @foreach($books as $index => $book)
                 <a href="{{ route('book.show', $book->id) }}"
                     class="book-card group bg-white rounded-2xl border border-gray-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300 flex flex-col h-full overflow-hidden block"
-                    data-category="{{ $book->category_id }}">
+                    data-category="{{ $book->category_id }}"
+                    style="{{ $index >= 12 ? 'display: none;' : 'display: block;' }}">
 
                     <div class="relative w-full pt-3 px-3">
                         <div
@@ -274,6 +277,15 @@
                 @endforeach
             </div>
 
+            @if(count($books) > 12)
+            <div id="load-more-container" class="w-full flex justify-center mt-12 relative z-10">
+                <button type="button" onclick="showAllBooks()" class="px-8 py-3.5 bg-white border border-gray-200 text-[#900b21] font-bold text-sm rounded-full hover:bg-red-50 hover:border-red-100 transition-all duration-300 shadow-sm flex items-center gap-2 group">
+                    View All Books
+                    <svg class="w-4 h-4 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+            </div>
+            @endif
+
             <div id="empty-state"
                 class="{{ $books->isEmpty() ? 'flex' : 'hidden' }} flex-col items-center justify-center py-16 px-4 bg-gray-50 border border-dashed border-gray-200 rounded-2xl w-full mt-6">
                 <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -286,7 +298,7 @@
             </div>
         </div>
 
-        <div class="w-full mt-24 mb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        {{-- <div class="w-full mt-24 mb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold font-['Gelasio'] text-gray-900 mb-4">
                     What People Say
@@ -385,10 +397,25 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
+
+
     </main>
 
     <script>
+        // FUNGSI BARU: Untuk nampilin semua buku yang disembunyikan
+        function showAllBooks() {
+            const cards = document.querySelectorAll('.book-card');
+            cards.forEach(card => {
+                card.style.display = 'block'; // Tampilkan semua
+                card.classList.add('animate-pop'); // Kasih animasi pop-up
+            });
+            
+            // Sembunyikan tombol Load More setelah diklik
+            const btnContainer = document.getElementById('load-more-container');
+            if (btnContainer) btnContainer.style.display = 'none';
+        }
+
         function filterBooks(categoryId, clickedBtn) {
             // 1. Reset semua tombol ke warna pudar
             document.querySelectorAll('.cat-btn').forEach(btn => {
@@ -423,7 +450,11 @@
                 }
             });
 
-            // 4. Tampilkan pesan kosong jika tidak ada buku yang cocok
+            // 4. Sembunyikan tombol "Load More" secara permanen kalau user lagi nge-filter
+            const btnContainer = document.getElementById('load-more-container');
+            if (btnContainer) btnContainer.style.display = 'none';
+
+            // 5. Tampilkan pesan kosong jika tidak ada buku yang cocok
             const emptyState = document.getElementById('empty-state');
             if (hasVisibleBooks) {
                 emptyState.classList.add('hidden');

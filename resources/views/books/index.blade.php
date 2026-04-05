@@ -5,16 +5,28 @@
 
 @section('content')
 <div class="flex justify-between items-center mb-6">
-    <div class="relative w-72">
+    
+    <form action="{{ route('books.index') }}" method="GET" class="relative w-72">
         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
         </div>
-        <input type="text" placeholder="Cari judul buku..."
-            class="bg-[#f4f5f7] border-none text-gray-600 text-sm rounded-xl focus:ring-0 block w-full pl-10 p-2.5 font-medium">
-    </div>
+        
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul atau penulis..."
+            class="bg-[#f4f5f7] border-none text-gray-600 text-sm rounded-xl focus:ring-0 block w-full pl-10 pr-10 p-2.5 font-medium transition-colors">
+        
+        @if(request('search'))
+            <a href="{{ route('books.index') }}" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#900b21] transition-colors" title="Hapus Pencarian">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </a>
+        @else
+            <button type="submit" class="hidden">Search</button>
+        @endif
+    </form>
 
     <a href="{{ route('books.create') }}"
         class="px-5 py-2.5 bg-[#900b21] hover:bg-[#7a091c] text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
@@ -74,7 +86,13 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-6 py-12 text-center text-gray-500">Belum ada data buku</td>
+                    <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                        @if(request('search'))
+                            Pencarian untuk "<b>{{ request('search') }}</b>" tidak ditemukan.
+                        @else
+                            Belum ada data buku
+                        @endif
+                    </td>
                 </tr>
                 @endforelse
             </tbody>
